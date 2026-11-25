@@ -1,30 +1,279 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mediary — Injection Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
-<meta name="theme-color" content="#1E5BE6" />
-<link rel="icon" type="image/png" href="assets/favicon.png" />
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-<link rel="stylesheet" href="assets/style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Never miss a shot. Track GLP-1, insulin, growth hormone and cosmetic injections with simple reminders. Free to try on iPhone and Android.">
+<link rel="canonical" href="https://artifactai-hub.github.io/mediary-legal/">
+<meta property="og:url" content="https://artifactai-hub.github.io/mediary-legal/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mediary: Injection Tracker">
+<meta property="og:description" content="Log doses, track weight and symptoms, and share a clear summary with your healthcare professional.">
+<meta name="theme-color" content="#3B5BFF">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<title>Mediary</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist:wght@400;500;600&display=swap">
+<style>
+  /* Layout concept: asymmetric hero (text left, phone right), then a plain two-column feature list, a three-step strip, and one download band. */
+  :root {
+    --bg: #F5F7FF;
+    --surface: #FFFFFF;
+    --fg: #14182B;
+    --muted: #565D78;
+    --line: #DFE4F5;
+    --accent: #3B5BFF;
+    --accent-strong: #2744E6;
+    --on-accent: #FFFFFF;
+    --soft: #E8EDFF;
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --body: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1220;
+      --surface: #171C2F;
+      --fg: #EDEFFA;
+      --muted: #A0A8C8;
+      --line: #272D47;
+      --accent: #8095FF;
+      --accent-strong: #A3B3FF;
+      --on-accent: #0E1220;
+      --soft: #1D2440;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1220;
+    --surface: #171C2F;
+    --fg: #EDEFFA;
+    --muted: #A0A8C8;
+    --line: #272D47;
+    --accent: #8095FF;
+    --accent-strong: #A3B3FF;
+    --on-accent: #0E1220;
+    --soft: #1D2440;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+  p { margin: 0; }
+
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 22px; }
+  .brand .icon { width: 34px; height: 34px; border-radius: 10px; display: block; }
+  nav.top a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; margin-left: 20px; }
+  nav.top a:hover { color: var(--fg); }
+
+  .hero { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; padding-block: 40px 72px; }
+  .hero > * { min-width: 0; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-strong); margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(40px, 7vw, 64px); }
+  .lede { font-size: 19px; color: var(--muted); max-width: 34em; margin-top: 20px; }
+  .stores { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1.5px solid var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); }
+  .btn.ghost { color: var(--accent-strong); background: transparent; }
+  .btn:hover { filter: brightness(0.95); }
+  .btn:focus-visible, nav.top a:focus-visible, .foot a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; flex: none; }
+  .price-note { margin-top: 16px; font-size: 14px; color: var(--muted); }
+
+  .phone { justify-self: center; width: min(100%, 300px); background: var(--surface); border: 1px solid var(--line); border-radius: 36px; padding: 18px; box-shadow: 0 24px 60px -28px rgba(20, 30, 90, 0.35); }
+  .phone .bar { width: 84px; height: 6px; border-radius: 3px; background: var(--line); margin: 0 auto 18px; }
+  .dose { background: var(--soft); border-radius: 20px; padding: 16px; }
+  .dose .label { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .dose .name { font-family: var(--display); font-size: 24px; font-weight: 600; margin-top: 4px; }
+  .dose .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .chip { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; }
+  .weight { margin-top: 14px; border: 1px solid var(--line); border-radius: 20px; padding: 14px 16px 8px; }
+  .weight .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .weight .big { font-family: var(--display); font-size: 22px; font-weight: 600; }
+  .weight .when { font-size: 12px; color: var(--muted); }
+  .weight svg { display: block; width: 100%; height: 72px; margin-top: 6px; }
+  .illus { text-align: center; font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+  section { padding-block: 64px; border-top: 1px solid var(--line); }
+  section h2 { font-size: clamp(28px, 4.5vw, 38px); max-width: 18em; }
+  .sub { color: var(--muted); max-width: 36em; margin-top: 12px; }
+
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 48px; margin-top: 40px; }
+  .features > div { min-width: 0; }
+  .features h3 { font-family: var(--body); font-size: 17px; font-weight: 600; letter-spacing: 0; }
+  .features p { color: var(--muted); margin-top: 6px; }
+
+  .steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 40px; list-style: none; padding: 0; }
+  .steps li { counter-increment: step; min-width: 0; }
+  .steps li::before { content: counter(step); display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-weight: 600; margin-bottom: 14px; }
+  .steps h3 { font-family: var(--body); font-size: 17px; font-weight: 600; letter-spacing: 0; }
+  .steps p { color: var(--muted); margin-top: 6px; }
+
+  .band { background: var(--soft); border-radius: 28px; padding: 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: center; border-top: 0; margin-block: 24px 64px; }
+  .band > * { min-width: 0; }
+  .band .stores { margin-top: 0; justify-content: flex-start; }
+
+  .care { font-size: 14px; color: var(--muted); max-width: 46em; margin-bottom: 32px; }
+  .foot { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 14px; color: var(--muted); padding-block: 28px 40px; border-top: 1px solid var(--line); }
+  .foot a { text-decoration-color: var(--line); text-underline-offset: 3px; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 24px 48px; }
+    .features, .steps, .band { grid-template-columns: 1fr; }
+    .band { padding: 28px 22px; }
+    nav.top a:not(.keep) { display: none; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn { transition: filter 0.15s ease; }
+  }
+</style>
 </head>
 <body>
-<header class="hero"><div class="hero-inner"><a class="brand" href="./"><img class="icon" src="assets/app-icon.png" alt="" width="44" height="44" /><img class="wordmark" src="assets/wordmark-white.png" alt="Mediary" /></a></div></header>
 <div class="wrap">
-<article class="doc">
-<h1>Mediary — Injection Tracker</h1>
-<p>Mediary helps you record and organise your own injection information.</p>
-<ul class="links">
-<li><a href="privacy.html">Privacy Policy</a></li>
-<li><a href="terms.html">Terms of Use</a></li>
-<li><a href="delete-account/">Delete your account and data</a></li>
-</ul>
-<p>Contact: <a href="mailto:help@artifactai.co.nz">help@artifactai.co.nz</a></p>
-</article>
+  <header class="top">
+    <a class="brand" href="#top" aria-label="Mediary">
+      <img class="icon" src="assets/app-icon.png" alt="" width="34" height="34">
+      Mediary
+    </a>
+    <nav class="top" aria-label="Page">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a class="keep" href="#get">Get the app</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Injection tracker</p>
+        <h1>Never miss a shot.</h1>
+        <p class="lede">Track GLP-1, insulin, growth hormone and cosmetic injections with simple reminders. Keep your doses, weight and symptoms in one place, and bring a clear summary to your next appointment.</p>
+        <div class="stores" id="get">
+          <a class="btn primary" href="https://apps.apple.com/us/app/mediary/id6821544844" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.2 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM14.1 5.9c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1.1.1 2.1-.5 2.7-1.3z"/></svg>
+            Download on the App Store
+          </a>
+          <a class="btn ghost" href="https://play.google.com/store/apps/details?id=nz.co.artifactai.mediary" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 2.6c-.3.3-.5.8-.5 1.4v16c0 .6.2 1.1.5 1.4l.1.1 9-9v-.2l-9-9zM16.3 15.5l-3-3v-.2l3-3 .1.1 3.6 2c1 .6 1 1.5 0 2.1l-3.6 2-.1 0zM16.4 15.4l-3.1-3.1-9.1 9.1c.3.4.9.4 1.5.1l10.7-6.1zM16.4 8.6 5.7 2.5c-.6-.3-1.2-.3-1.5.1l9.1 9.1 3.1-3.1z"/></svg>
+            Get it on Google Play
+          </a>
+        </div>
+        <p class="price-note">Try it free, then unlock lifetime access with a one-time purchase. NZ$16.99 in New Zealand, US$9.99 in the US; prices vary by country.</p>
+      </div>
+
+      <div>
+        <div class="phone" role="img" aria-label="Illustration of the Mediary app showing a logged dose and a weight chart">
+          <div class="bar"></div>
+          <div class="dose">
+            <p class="label">Logged today</p>
+            <p class="name">Weekly dose</p>
+            <div class="meta">
+              <span class="chip">0.5 mg</span>
+              <span class="chip">Abdomen Left</span>
+              <span class="chip">9:00 AM</span>
+            </div>
+          </div>
+          <div class="weight">
+            <div class="row"><span class="big">86.8 kg</span><span class="when">Last 10 weeks</span></div>
+            <svg viewBox="0 0 220 72" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" style="stop-color: var(--accent); stop-opacity: 0.28"/>
+                  <stop offset="1" style="stop-color: var(--accent); stop-opacity: 0"/>
+                </linearGradient>
+              </defs>
+              <path d="M6 10 C 30 12, 44 18, 66 22 S 108 34, 130 38 S 176 52, 214 60 L 214 72 L 6 72 Z" fill="url(#wfill)"/>
+              <path d="M6 10 C 30 12, 44 18, 66 22 S 108 34, 130 38 S 176 52, 214 60" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="214" cy="60" r="5" fill="var(--surface)" stroke="var(--accent)" stroke-width="3"/>
+            </svg>
+          </div>
+        </div>
+        <p class="illus">Illustration with example values</p>
+      </div>
+    </div>
+
+    <section id="features">
+      <h2>Everything about your injections, in one calm place</h2>
+      <p class="sub">Built for people on regular injections who want a record they can trust and show.</p>
+      <div class="features">
+        <div>
+          <h3>Log a dose in seconds</h3>
+          <p>Record the amount and the injection site for every dose, with the date and time.</p>
+        </div>
+        <div>
+          <h3>Reminders you set once</h3>
+          <p>Get a nudge when a dose is due, so a busy week doesn't turn into a missed shot.</p>
+        </div>
+        <div>
+          <h3>Stock that tells you early</h3>
+          <p>Keep track of pens and vials, and see when you are running low or a batch is close to expiring.</p>
+        </div>
+        <div>
+          <h3>Symptoms linked to a medication</h3>
+          <p>Note how you feel and how strong it was, and tie it to the treatment it relates to.</p>
+        </div>
+        <div>
+          <h3>A weight trend you can read</h3>
+          <p>Add a weigh-in and watch the chart build over weeks, with every entry in a simple list.</p>
+        </div>
+        <div>
+          <h3>Appointments and notes</h3>
+          <p>Keep what your provider told you and any change to your treatment next to the records it affects.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <h2>From the pen to the appointment</h2>
+      <ol class="steps">
+        <li>
+          <h3>Log</h3>
+          <p>Add your medication once, then log each dose as you take it.</p>
+        </li>
+        <li>
+          <h3>Track</h3>
+          <p>Watch your history, stock, symptoms and weight fill in over time.</p>
+        </li>
+        <li>
+          <h3>Share</h3>
+          <p>Choose a period and create a clear Health Summary to show your healthcare professional.</p>
+        </li>
+      </ol>
+    </section>
+
+    <div class="band">
+      <div>
+        <h2>Start with your next dose</h2>
+        <p class="sub">Free to try on iPhone and Android.</p>
+      </div>
+      <div class="stores">
+        <a class="btn primary" href="https://apps.apple.com/us/app/mediary/id6821544844" target="_blank" rel="noopener">App Store</a>
+        <a class="btn ghost" href="https://play.google.com/store/apps/details?id=nz.co.artifactai.mediary" target="_blank" rel="noopener">Google Play</a>
+      </div>
+    </div>
+
+    <p class="care">Mediary is a personal record-keeping tool. It does not give medical advice, and it does not replace your healthcare professional. Always follow their guidance about your treatment.</p>
+  </main>
+
+  <footer class="foot">
+    <span>&copy; 2026 Artifact AI Limited</span>
+    <a href="https://artifactai-hub.github.io/mediary-legal/privacy.html" target="_blank" rel="noopener">Privacy policy</a>
+    <a href="https://artifactai-hub.github.io/mediary-legal/terms.html" target="_blank" rel="noopener">Terms of use</a>
+    <a href="https://artifactai-hub.github.io/mediary-legal/delete-account/" target="_blank" rel="noopener">Delete your account and data</a>
+    <a href="mailto:help@artifactai.co.nz">help@artifactai.co.nz</a>
+  </footer>
 </div>
 </body>
 </html>
